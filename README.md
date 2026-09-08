@@ -19,9 +19,10 @@ El proyecto requiere dos terminales (una para el servidor backend y otra para la
 
 ### 1. Iniciar el Backend (Spring Boot)
 
-En la raíz del proyecto, abre una terminal y ejecuta:
+En la primera terminal, ingresa a la carpeta `backend/` y ejecuta:
 
 ```bash
+cd backend
 mvn spring-boot:run
 ```
 *(O si usas el wrapper de Maven en Linux/macOS: `./mvnw spring-boot:run`)*
