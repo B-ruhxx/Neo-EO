@@ -1,7 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Home, CreditCard, User, Settings, Coins } from "lucide-react";
 import axios from "axios";
+import Sidebar from "./Sidebar";
+import NotificationBell from "./NotificationBell";
 import "./Dashboard.css";
 import "./Account.css";
 import "./LightMode.css";
@@ -12,15 +13,15 @@ export default function EditProfile() {
   const [darkMode, setDarkMode] = useState(true);
 
   const [user, setUser] = useState({
-    firstName: "Derrick",
-    lastName: "Fisher",
-    email: "derrick@example.com",
+    firstName: "Carlos",
+    lastName: "Mendoza",
+    email: "carlos.mendoza@ejemplo.com",
     password: "mySecret123",
-    phoneNumber: "",
-    address: "",
-    city: "",
-    postalCode: "",
-    country: "",
+    phoneNumber: "+51 987 654 321",
+    address: "Av. Javier Prado Este 2465, San Borja",
+    city: "Lima",
+    postalCode: "15036",
+    country: "Perú",
   });
 
   useEffect(() => {
@@ -29,14 +30,27 @@ export default function EditProfile() {
   }, []);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser((prev) => ({
-        ...prev,
-        ...storedUser,
-        password: "",
-      }));
-    }
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await axios.get("http://localhost:8080/api/auth/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUser(res.data);
+      } catch (err) {
+        console.error("Failed to fetch user data:", err);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const handleChange = (e) => {
@@ -44,100 +58,91 @@ export default function EditProfile() {
   };
 
   const handleSave = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-      const res = await axios.put(
-        `http://localhost:8080/api/users/${storedUser.id}`,
-        user,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    try {
+      const res = await axios.put("http://localhost:8080/api/auth/me", user, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       localStorage.setItem("user", JSON.stringify(res.data));
       navigate("/account");
     } catch (err) {
       console.error("Error updating profile:", err);
-      alert("Failed to update profile. Please try again.");
+      alert("No se pudo actualizar el perfil. Por favor intenta de nuevo.");
     }
   };
 
   return (
     <div className={`dashboard ${darkMode ? "" : "light-mode"}`}>
-      <aside className="sidebar">
-        <img
-          src={darkMode ? "/logo.png" : "/darkModeLogo.png"}
-          alt="NeoBank Logo"
-          className="sidebar-logo-img"
-        />
-        <ul className="sidebar-menu">
-          <li className="active">
-            <Link to="/dashboard">
-              <Home className="icon" /> Overview
-            </Link>
-          </li>
-          <li>
-            <Link to="/transactions">
-              <CreditCard className="icon" /> Transactions
-            </Link>
-          </li>
-          <li>
-            <Link to="/account">
-              <User className="icon" /> Account
-            </Link>
-          </li>
-          <li>
-            <Link to="/crypto">
-              <Coins className="icon" /> Crypto
-            </Link>
-          </li>
-          <li>
-            <Link to="/settings">
-              <Settings className="icon" /> Settings
-            </Link>
-          </li>
-        </ul>
-      </aside>
+      <Sidebar active="account" />
 
       <div className="main">
-        <header className="header"></header>
+        <header className="header">
+          <div className="header-right">
+            <NotificationBell />
+          </div>
+        </header>
 
         <main className="content">
-          <div className="content-box">
-            <h1 className="account-title">Edit Profile</h1>
+          <div className="content-box account-container">
+            <h1 className="account-title">Editar Perfil</h1>
 
             <div className="account-card">
-              {[
-                { label: "First Name", key: "firstName" },
-                { label: "Last Name", key: "lastName" },
-                { label: "Email", key: "email" },
-                { label: "Password", key: "password" },
-                { label: "Phone Number", key: "phoneNumber" },
-                { label: "Address", key: "address" },
-                { label: "City", key: "city" },
-                { label: "Postal Code", key: "postalCode" },
-                { label: "Country", key: "country" },
-              ].map((field) => (
-                <div className="account-field" key={field.key}>
-                  <label>{field.label}:</label>
-                  <input
-                    type={field.key === "password" ? "password" : "text"}
-                    name={field.key}
-                    value={user[field.key] || ""}
-                    onChange={handleChange}
-                    className="edit-input"
-                    required={["firstName", "lastName", "email", "password"].includes(field.key)}
-                  />
-                </div>
-              ))}
+              {(() => {
+                const fieldPlaceholders = {
+                  firstName: "Carlos",
+                  lastName: "Mendoza",
+                  email: "carlos.mendoza@ejemplo.com",
+                  password: "••••••••",
+                  phoneNumber: "+51 987 654 321",
+                  address: "Av. Javier Prado Este 2465, San Borja",
+                  city: "Lima",
+                  postalCode: "15036",
+                  country: "Perú",
+                };
+                return [
+                  { label: "Nombre", key: "firstName" },
+                  { label: "Apellido", key: "lastName" },
+                  { label: "Correo Electrónico", key: "email" },
+                  { label: "Contraseña", key: "password" },
+                  { label: "Número de Teléfono", key: "phoneNumber" },
+                  { label: "Dirección", key: "address" },
+                  { label: "Ciudad", key: "city" },
+                  { label: "Código Postal", key: "postalCode" },
+                  { label: "País", key: "country" },
+                ].map((field) => (
+                  <div className="account-field" key={field.key}>
+                    <label>{field.label}:</label>
+                    <input
+                      type={field.key === "password" ? "password" : "text"}
+                      name={field.key}
+                      value={user[field.key] || ""}
+                      onChange={handleChange}
+                      placeholder={fieldPlaceholders[field.key] || ""}
+                      className="edit-input"
+                      required={["firstName", "lastName", "email", "password"].includes(field.key)}
+                    />
+                  </div>
+                ));
+              })()}
 
-              <button className="edit-btn" onClick={handleSave}>
-                Save Changes
-              </button>
+              <div className="form-actions">
+                <button className="edit-btn" onClick={handleSave}>
+                  Guardar Cambios
+                </button>
+                <button
+                  className="cancel-btn"
+                  onClick={() => navigate("/account")}
+                  type="button"
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
         </main>

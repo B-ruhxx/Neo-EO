@@ -44,6 +44,11 @@ public class AuthControllerSecurityTests {
         public CustomUserDetailService customUserDetailService() {
             return Mockito.mock(CustomUserDetailService.class);
         }
+
+        @Bean
+        public com.neobank.backend.Repository.UserRepository userRepository() {
+            return Mockito.mock(com.neobank.backend.Repository.UserRepository.class);
+        }
     }
 
     @Test

@@ -65,6 +65,17 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<com.neobank.backend.DTO.UserSummaryDTO>> searchUsers(@RequestParam("q") String query) {
+        return ResponseEntity.ok(userService.searchUsers(query));
+    }
+
+    @GetMapping("/contacts")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<com.neobank.backend.DTO.UserSummaryDTO>> getFrequentContacts(java.security.Principal principal) {
+        return ResponseEntity.ok(userService.getFrequentContacts(principal.getName()));
+    }
 
 }
 

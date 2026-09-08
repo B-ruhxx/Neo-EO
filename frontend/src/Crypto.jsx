@@ -1,18 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
-  Home,
-  CreditCard,
-  User,
-  Settings,
   RefreshCcw,
   Search,
   X,
   Coins,
-  Bell,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
 } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
+import ClientLayout from "./ClientLayout";
+import MetricCard from "./MetricCard";
+import Modal from "./Modal";
+import { Pagination } from "./components";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import "./Dashboard.css";
 import "./LightMode.css";
 import "./Crypto.css";
@@ -68,7 +70,6 @@ export default function Crypto() {
   const token = localStorage.getItem("token");
   const auth = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
-  const [theme, setTheme] = useState("dark");
   const [watchlist, setWatchlist] = useState(DEFAULT_COINS);
   const [logos, setLogos] = useState({});
   const [fiatBalance, setFiatBalance] = useState(0);
@@ -77,6 +78,18 @@ export default function Crypto() {
   const [orders, setOrders] = useState([]);
   const [loadingPrices, setLoadingPrices] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(null);
+
+  const [ordersPage, setOrdersPage] = useState(1);
+  const ordersPageSize = 6;
+  const totalOrders = orders.length;
+  const totalOrdersPages = Math.max(1, Math.ceil(totalOrders / ordersPageSize));
+  const startOrderIdx = (ordersPage - 1) * ordersPageSize;
+  const endOrderIdx = Math.min(startOrderIdx + ordersPageSize, totalOrders);
+  const paginatedOrders = orders.slice(startOrderIdx, endOrderIdx);
+
+  const [holdingsPage, setHoldingsPage] = useState(1);
+  const holdingsPageSize = 5;
+
 
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -91,11 +104,6 @@ export default function Crypto() {
   const [submitting, setSubmitting] = useState(false);
 
   const railRef = useRef(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved === "light") setTheme("light");
-  }, []);
 
   useEffect(() => {
     if (!token) {
@@ -271,6 +279,13 @@ export default function Crypto() {
     [fiatBalance, analytics.totalMV]
   );
 
+  const totalHoldings = analytics.rows.length;
+  const totalHoldingsPages = Math.max(1, Math.ceil(totalHoldings / holdingsPageSize));
+  const startHoldingIdx = (holdingsPage - 1) * holdingsPageSize;
+  const endHoldingIdx = Math.min(startHoldingIdx + holdingsPageSize, totalHoldings);
+  const paginatedHoldings = analytics.rows.slice(startHoldingIdx, endHoldingIdx);
+
+
   const pieData = useMemo(() => {
     const arr = holdings
       .map((h) => ({
@@ -409,28 +424,28 @@ export default function Crypto() {
         <div className="coin-price">${fmt(price, 2)}</div>
         <div className={`coin-chg ${changeClass(chg)}`}>
           {chg >= 0 ? "+" : ""}
-          {fmt(chg, 2)}% Today
+          {fmt(chg, 2)}% Hoy
         </div>
         <div className="trade-actions">
           <div className="btn-row">
             <button
-              className="btn buy"
+              className="btn-trade buy"
               disabled={!supported}
               onClick={() => openTrade(c.symbol, "BUY")}
             >
-              Buy
+              Comprar
             </button>
             <button
-              className="btn sell"
+              className="btn-trade sell"
               disabled={!supported}
               onClick={() => openTrade(c.symbol, "SELL")}
             >
-              Sell
+              Vender
             </button>
           </div>
           {!supported && (
             <div className="hint" style={{ marginTop: 6, opacity: 0.7 }}>
-              Not supported
+              No disponible
             </div>
           )}
         </div>
@@ -439,339 +454,475 @@ export default function Crypto() {
   };
 
   return (
-    <div className={`dashboard ${theme === "light" ? "light-mode" : ""}`}>
-      <aside className="sidebar">
-        <img
-          src={theme === "light" ? "/DarkModeLogo.png" : "/logo.png"}
-          alt="NeoBank Logo"
-          className="sidebar-logo-img"
-        />
-        <ul className="sidebar-menu">
-          <li>
-            <Link to="/dashboard">
-              <Home className="icon" /> Overview
-            </Link>
-          </li>
-          <li>
-            <Link to="/transactions">
-              <CreditCard className="icon" /> Transactions
-            </Link>
-          </li>
-          <li>
-            <Link to="/account">
-              <User className="icon" /> Account
-            </Link>
-          </li>
-          <li className="active">
-            <Link to="/crypto">
-              <Coins className="icon" /> Crypto
-            </Link>
-          </li>
-          <li>
-            <Link to="/settings">
-              <Settings className="icon" /> Settings
-            </Link>
-          </li>
-        </ul>
-      </aside>
+    <ClientLayout
+      active="crypto"
+      title="Criptomonedas"
+      subtitle="Compra, venta y custodia de criptoactivos en tiempo real"
+    >
+      <div className="crypto-box">
+        {/* Métricas Globales de Cripto con MetricCard compartido */}
+        <div className="account-metrics-grid" style={{ marginBottom: "24px" }}>
+          <MetricCard
+            title="Valor Total Cartera"
+            value={`$${fmt(totalPortfolioValue, 2)}`}
+            badge="Efectivo + Cripto"
+            icon={Coins}
+            accent="primary"
+          />
+          <MetricCard
+            title="Ganancia / Pérdida"
+            value={`$${fmt(analytics.totalUPL, 2)}`}
+            badge={`${analytics.totalUPL >= 0 ? "+" : ""}${fmt(analytics.totalUPLPct, 2)}% PnL`}
+            icon={analytics.totalUPL >= 0 ? TrendingUp : TrendingDown}
+            accent={analytics.totalUPL >= 0 ? "emerald" : "amber"}
+          />
+          <MetricCard
+            title="Saldo Disponible USD"
+            value={`$${fmt(fiatBalance, 2)}`}
+            badge="Listo para operar"
+            icon={DollarSign}
+            accent="cyan"
+          />
+          <MetricCard
+            title="Órdenes Ejecutadas"
+            value={`${orders.length}`}
+            badge="Historial total"
+            icon={RefreshCcw}
+            accent="info"
+          />
+        </div>
 
-      <div className="main">
-        <header className="header">
-          <div className="header-right">
-            <Bell className="notif-icon" />
-          </div>
-        </header>
-
-        <main className="content">
-          <div className="content-box crypto-box">
-            <h2 className="screen-title">Crypto</h2>
-
-            <div className="search-bar">
-              <div
-                className="search-input-wrap"
-                onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
-              >
-                <Search size={16} className="search-icon" />
-                <input
-                  className="search-input"
-                  value={searchText}
-                  onChange={(e) => runSearch(e.target.value)}
-                  placeholder="Search coin (e.g., Bitcoin, ETH, XRP)"
-                  onFocus={() => searchText && setSearchOpen(true)}
-                />
-                {searchText && (
-                  <button
-                    className="btn icon-btn"
-                    onClick={resetWatchlist}
-                    aria-label="Clear search"
-                  >
-                    <X size={16} />
-                  </button>
-                )}
-                {searchOpen && searchResults.length > 0 && (
-                  <div className="search-dropdown">
-                    {searchResults.map((r) => (
-                      <button
-                        key={r.id}
-                        className="search-item"
-                        onMouseDown={() => pickSearchCoin(r)}
-                      >
-                        <img
-                          src={r.logo || "/coin.svg"}
-                          alt={r.symbol}
-                          className="search-logo"
-                          onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = "/coin.svg";
-                          }}
-                        />
-                        <div className="search-meta">
-                          <div className="search-name">{r.name}</div>
-                          <div className="search-sym">{r.symbol}</div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="updated-pill">
-                <button
-                  className="btn ghost small"
-                  onClick={refreshPrices}
-                  disabled={loadingPrices}
-                >
-                  <RefreshCcw size={14} /> {loadingPrices ? "Refreshing" : "Refresh"}
-                </button>
-                <span className="muted">
-                  {lastUpdated
-                    ? `Updated ${Math.max(
-                        1,
-                        Math.round((new Date() - lastUpdated) / 1000)
-                      )}s ago`
-                    : ""}
-                </span>
-              </div>
-            </div>
-
-            <div className="section-title">Market</div>
-            <div className="carousel-wrap">
-              <div className="cards rail five" ref={railRef}>
-                {watchlist.map((c) => (
-                  <div key={c.symbol} className="card-slot">
-                    <CoinCard c={c} />
-                  </div>
-                ))}
-                {watchlist.length === 0 && (
-                  <div className="empty-card">
-                    <p>No coins yet.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="grid-3">
-              <div className="panel">
-                <div className="panel-title">Portfolio</div>
-                {pieData.length > 0 ? (
-                  <div style={{ height: 240 }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={pieData}
-                          dataKey="value"
-                          nameKey="name"
-                          innerRadius={60}
-                          outerRadius={95}
-                          paddingAngle={2}
-                        >
-                          {pieData.map((_, i) => (
-                            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <div className="legend">
-                      {pieData.map((p, i) => (
-                        <div key={i} className="legend-item">
-                          <span
-                            className="dot"
-                            style={{ background: PIE_COLORS[i % PIE_COLORS.length] }}
-                          />
-                          {p.name} {fmt(p.pct, 1)}%
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="empty">No holdings yet</div>
-                )}
-              </div>
-
-              <div className="panel kpi">
-                <div className="panel-title">Total Value</div>
-                <div className="big">${fmt(totalPortfolioValue, 2)}</div>
-                <div className={`kpi-chg ${changeClass(analytics.totalUPLPct)}`}>
-                  {fmt(analytics.totalUPLPct, 2)} %
-                </div>
-                <div className="hint">Cash + crypto value</div>
-              </div>
-
-              <div className="panel kpi">
-                <div className="panel-title">Total P/L</div>
-                <div className="big">${fmt(analytics.totalUPL, 2)}</div>
-                <div className={`kpi-chg ${changeClass(analytics.totalUPLPct)}`}>
-                  {(analytics.totalUPLPct >= 0 ? "+" : "") +
-                    fmt(analytics.totalUPLPct, 2)}
-                  %
-                </div>
-                <div className="hint">Unrealized (WAC)</div>
-              </div>
-            </div>
-
-            <div className="panel">
-              <div className="panel-title">Holdings</div>
-              <div className="table-wrap">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Symbol</th>
-                      <th>Quantity</th>
-                      <th>Avg. Price</th>
-                      <th>Current Price</th>
-                      <th>Market Value</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {analytics.rows.map((r) => (
-                      <tr key={r.symbol}>
-                        <td className="sym">
-                          <img
-                            className="coin-logo"
-                            src={logos[r.symbol] || FALLBACK_LOGOS[r.symbol] || "/coin.svg"}
-                            alt={r.symbol}
-                            onError={(e) => {
-                              e.currentTarget.onerror = null;
-                              e.currentTarget.src = "/coin.svg";
-                            }}
-                          />
-                          {r.symbol}
-                        </td>
-                        <td>{fmt(r.qty, 8)}</td>
-                        <td>${fmt(r.avgCost, 2)}</td>
-                        <td>${fmt(r.currentPrice, 2)}</td>
-                        <td>${fmt(r.marketValue, 2)}</td>
-                      </tr>
-                    ))}
-                    {analytics.rows.length === 0 && (
-                      <tr>
-                        <td colSpan="5" className="empty">
-                          No positions
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className="panel">
-              <div className="panel-title">Order History</div>
-              <div className="table-wrap">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Side</th>
-                      <th>Symbol</th>
-                      <th>Qty</th>
-                      <th>USD Total</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.map((o) => (
-                      <tr key={o.id}>
-                        <td>{new Date(o.createdAt).toLocaleString()}</td>
-                        <td>{o.side}</td>
-                        <td>{o.symbol}</td>
-                        <td>{fmt(o.quantity, 8)}</td>
-                        <td>${fmt(o.quoteAmount, 2)}</td>
-                        <td>{o.status}</td>
-                      </tr>
-                    ))}
-                    {orders.length === 0 && (
-                      <tr>
-                        <td colSpan="6" className="empty">
-                          No orders yet
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-
-      {tradeOpen && (
-        <div className="modal-backdrop" onClick={() => setTradeOpen(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className={`modal-title ${tradeSide === "BUY" ? "buy" : "sell"}`}>
-              {tradeSide} {tradeSymbol}
-            </div>
-            <div className="modal-body">
-              <label className="field-label">Amount (USD)</label>
-              <input
-                type="number"
-                min="0.01"
-                step="0.01"
-                value={tradeUsd}
-                onChange={(e) => setTradeUsd(e.target.value)}
-                className="field-input"
-              />
-              <div className="quick-row">
-                {[100, 250, 500, 1000].map((amt) => (
-                  <button key={amt} className="chip" onClick={() => setTradeUsd(String(amt))}>
-                    ${amt}
-                  </button>
-                ))}
-              </div>
-              <div className="estimates">
-                <div>
-                  <span className="muted">Est. Price</span>
-                  <div>${fmt(priceBy[tradeSymbol], 2)}</div>
-                </div>
-                <div>
-                  <span className="muted">Est. Qty</span>
-                  <div>
-                    {fmt(
-                      (Number(tradeUsd || 0) / (priceBy[tradeSymbol] || 1)) || 0,
-                      8
-                    )}{" "}
-                    {tradeSymbol}
-                  </div>
-                </div>
-              </div>
-
-              {tradeMsg && <div className="trade-msg" style={{ marginTop: 8 }}>{tradeMsg}</div>}
-            </div>
-            <div className="modal-actions">
-              <button className="btn ghost" onClick={() => setTradeOpen(false)}>
-                Close
-              </button>
+        {/* Buscador y Actualización */}
+        <div className="search-bar">
+          <div
+            className="search-input-wrap"
+            onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
+          >
+            <Search size={16} className="search-icon" />
+            <input
+              className="search-input"
+              value={searchText}
+              onChange={(e) => runSearch(e.target.value)}
+              placeholder="Buscar moneda (ej. Bitcoin, ETH, XRP)"
+              onFocus={() => searchText && setSearchOpen(true)}
+            />
+            {searchText && (
               <button
-                className={`btn ${tradeSide === "BUY" ? "buy" : "sell"}`}
-                onClick={submitTrade}
-                disabled={submitting}
+                type="button"
+                className="search-clear-btn"
+                onClick={resetWatchlist}
+                aria-label="Limpiar búsqueda"
               >
-                {submitting ? "Placing..." : `${tradeSide}`}
+                <X size={16} />
               </button>
+            )}
+            {searchOpen && searchResults.length > 0 && (
+              <div className="search-dropdown">
+                {searchResults.map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    className="search-item"
+                    onMouseDown={() => pickSearchCoin(r)}
+                  >
+                    <img
+                      src={r.logo || "/coin.svg"}
+                      alt={r.symbol}
+                      className="search-logo"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/coin.svg";
+                      }}
+                    />
+                    <div className="search-meta">
+                      <div className="search-name">{r.name}</div>
+                      <div className="search-sym">{r.symbol}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="updated-pill">
+            <button
+              type="button"
+              className="btn-refresh"
+              onClick={refreshPrices}
+              disabled={loadingPrices}
+            >
+              <RefreshCcw size={14} className={loadingPrices ? "animate-spin" : ""} />
+              {loadingPrices ? "Actualizando..." : "Actualizar"}
+            </button>
+            <span className="muted">
+              {lastUpdated
+                ? `Actualizado hace ${Math.max(
+                    1,
+                    Math.round((new Date() - lastUpdated) / 1000)
+                  )}s`
+                : ""}
+            </span>
+          </div>
+        </div>
+
+        {/* Mercado / Carousel de Criptomonedas */}
+        <div>
+          <div className="section-title">Mercado de Criptoactivos</div>
+          <div className="carousel-wrap">
+            <div className="cards rail five" ref={railRef}>
+              {watchlist.map((c) => (
+                <div key={c.symbol} className="card-slot">
+                  <CoinCard c={c} />
+                </div>
+              ))}
+              {watchlist.length === 0 && (
+                <div className="empty" style={{ width: "100%", padding: "30px" }}>
+                  <p style={{ margin: 0 }}>No hay monedas en seguimiento.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Distribución del Portafolio y Resumen */}
+        <div className="crypto-portfolio-grid">
+          <div className="panel">
+            <div className="panel-title" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Coins size={18} style={{ color: "var(--primary)" }} /> Distribución del Portafolio
+            </div>
+            {pieData.length > 0 ? (
+              <div className="chart-container-wrap">
+                <div style={{ width: "100%", height: 210 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        dataKey="value"
+                        nameKey="name"
+                        innerRadius={65}
+                        outerRadius={95}
+                        paddingAngle={3}
+                        stroke="none"
+                      >
+                        {pieData.map((_, i) => (
+                          <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="crypto-legend">
+                  {pieData.map((p, i) => (
+                    <div key={i} className="legend-item">
+                      <span
+                        className="dot"
+                        style={{ background: PIE_COLORS[i % PIE_COLORS.length] }}
+                      />
+                      <span>{p.name}</span>
+                      <span style={{ color: "var(--text-muted)" }}>{fmt(p.pct, 1)}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="empty" style={{ padding: "40px 20px" }}>
+                <p style={{ margin: 0, fontWeight: 600 }}>Sin posiciones actualmente</p>
+                <p style={{ margin: "6px 0 0", fontSize: "0.85rem", opacity: 0.8 }}>
+                  Adquiere activos desde el mercado para visualizar la composición de tu cartera.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="panel">
+            <div className="panel-title" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <TrendingUp size={18} style={{ color: "var(--primary)" }} /> Resumen de Custodia & Rendimiento
+            </div>
+            <div className="crypto-breakdown-container">
+              <div className="crypto-breakdown-card">
+                <span className="crypto-breakdown-label">Valor en Criptomonedas</span>
+                <span className="crypto-breakdown-val">${fmt(analytics.totalMV, 2)}</span>
+                <span className="crypto-breakdown-hint">Total activos custodiados</span>
+              </div>
+              <div className="crypto-breakdown-card">
+                <span className="crypto-breakdown-label">Efectivo en Cuenta USD</span>
+                <span className="crypto-breakdown-val">${fmt(fiatBalance, 2)}</span>
+                <span className="crypto-breakdown-hint">Saldo libre para órdenes</span>
+              </div>
+              <div className="crypto-breakdown-card">
+                <span className="crypto-breakdown-label">Rendimiento No Realizado</span>
+                <span
+                  className="crypto-breakdown-val"
+                  style={{
+                    color: analytics.totalUPL >= 0 ? "var(--success)" : "var(--danger)",
+                  }}
+                >
+                  {analytics.totalUPL >= 0 ? "+" : ""}${fmt(analytics.totalUPL, 2)}
+                </span>
+                <span className="crypto-breakdown-hint">
+                  {analytics.totalUPL >= 0 ? "+" : ""}{fmt(analytics.totalUPLPct, 2)}% sobre costo base
+                </span>
+              </div>
+              <div className="crypto-breakdown-card">
+                <span className="crypto-breakdown-label">Activos en Cartera</span>
+                <span className="crypto-breakdown-val">{holdings.length} {holdings.length === 1 ? "moneda" : "monedas"}</span>
+                <span className="crypto-breakdown-hint">Posiciones abiertas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabla: Activos en Cartera */}
+        <div className="panel">
+          <div className="panel-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span>Activos en Cartera</span>
+            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 500 }}>
+              {analytics.rows.length} {analytics.rows.length === 1 ? "posición" : "posiciones"}
+            </span>
+          </div>
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Símbolo</th>
+                  <th>Cantidad</th>
+                  <th>Precio Promedio</th>
+                  <th>Precio Actual</th>
+                  <th>Valor de Mercado</th>
+                  <th>Rendimiento</th>
+                  <th style={{ textAlign: "right" }}>Operar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedHoldings.map((r) => (
+                  <tr key={r.symbol}>
+                    <td className="sym">
+                      <img
+                        className="coin-logo"
+                        src={logos[r.symbol] || FALLBACK_LOGOS[r.symbol] || "/coin.svg"}
+                        alt={r.symbol}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "/coin.svg";
+                        }}
+                      />
+                      <div>
+                        <div>{r.symbol}</div>
+                      </div>
+                    </td>
+                    <td>{fmt(r.qty, 8)}</td>
+                    <td>${fmt(r.avgCost, 2)}</td>
+                    <td>${fmt(r.currentPrice, 2)}</td>
+                    <td style={{ fontWeight: 700 }}>${fmt(r.marketValue, 2)}</td>
+                    <td>
+                      <span
+                        style={{
+                          color: r.upl >= 0 ? "var(--success)" : "var(--danger)",
+                          fontWeight: 700,
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        {r.upl >= 0 ? "+" : ""}${fmt(r.upl, 2)} ({r.upl >= 0 ? "+" : ""}{fmt(r.uplPct, 2)}%)
+                      </span>
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <div style={{ display: "inline-flex", gap: "6px" }}>
+                        <button
+                          type="button"
+                          className="btn-trade buy"
+                          style={{ padding: "4px 10px", fontSize: "0.78rem", height: "30px" }}
+                          onClick={() => openTrade(r.symbol, "BUY")}
+                        >
+                          Comprar
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-trade sell"
+                          style={{ padding: "4px 10px", fontSize: "0.78rem", height: "30px" }}
+                          onClick={() => openTrade(r.symbol, "SELL")}
+                        >
+                          Vender
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {analytics.rows.length === 0 && (
+                  <tr>
+                    <td colSpan="7" className="empty">
+                      No tienes activos en custodia actualmente
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {totalHoldings > holdingsPageSize && (
+            <div style={{ marginTop: "16px" }}>
+              <Pagination
+                currentPage={holdingsPage}
+                totalPages={totalHoldingsPages}
+                totalItems={totalHoldings}
+                startIndex={startHoldingIdx}
+                endIndex={endHoldingIdx}
+                onPageChange={setHoldingsPage}
+                itemLabel="posiciones"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Tabla: Historial de Órdenes */}
+        <div className="panel">
+          <div className="panel-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span>Historial de Órdenes</span>
+            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 500 }}>
+              {orders.length} {orders.length === 1 ? "orden" : "órdenes"}
+            </span>
+          </div>
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Fecha / Hora</th>
+                  <th>Operación</th>
+                  <th>Símbolo</th>
+                  <th>Cantidad</th>
+                  <th>Precio Unitario</th>
+                  <th>Total USD</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedOrders.map((o) => (
+                  <tr key={o.id}>
+                    <td>{new Date(o.createdAt).toLocaleString()}</td>
+                    <td>
+                      <span className={`crypto-side-badge ${o.side.toLowerCase()}`}>
+                        {o.side === "BUY" ? "Compra" : "Venta"}
+                      </span>
+                    </td>
+                    <td style={{ fontWeight: 700 }}>{o.symbol}</td>
+                    <td>{fmt(o.quantity, 8)}</td>
+                    <td>${fmt(o.price, 2)}</td>
+                    <td style={{ fontWeight: 700 }}>${fmt(o.quoteAmount, 2)}</td>
+                    <td>
+                      <span className={`crypto-status-badge ${String(o.status || "").toLowerCase()}`}>
+                        {o.status || "FILLED"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+                {orders.length === 0 && (
+                  <tr>
+                    <td colSpan="7" className="empty">
+                      Sin órdenes registradas en el historial
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {orders.length > ordersPageSize && (
+            <div style={{ marginTop: "16px" }}>
+              <Pagination
+                currentPage={ordersPage}
+                totalPages={totalOrdersPages}
+                totalItems={totalOrders}
+                startIndex={startOrderIdx}
+                endIndex={endOrderIdx}
+                onPageChange={setOrdersPage}
+                itemLabel="órdenes"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Modal Reutilizable para Trade de Cripto */}
+      <Modal
+        isOpen={tradeOpen}
+        onClose={() => setTradeOpen(false)}
+        title={`${tradeSide === "BUY" ? "Comprar" : "Vender"} ${tradeSymbol}`}
+        subtitle="Ejecución de orden a precio de mercado instantánea"
+        icon={Coins}
+        maxWidth="460px"
+        footer={
+          <div style={{ display: "flex", gap: "10px", width: "100%", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="modal-btn cancel"
+              onClick={() => setTradeOpen(false)}
+            >
+              Cerrar
+            </button>
+            <button
+              type="button"
+              className={`btn-confirm-trade ${tradeSide.toLowerCase()}`}
+              onClick={submitTrade}
+              disabled={submitting}
+            >
+              {submitting
+                ? "Procesando..."
+                : tradeSide === "BUY"
+                ? "Confirmar Compra"
+                : "Confirmar Venta"}
+            </button>
+          </div>
+        }
+      >
+        <div className="crypto-modal-body">
+          <div>
+            <label className="crypto-modal-label">
+              Monto a operar (USD):
+            </label>
+            <input
+              type="number"
+              min="0.01"
+              step="0.01"
+              value={tradeUsd}
+              onChange={(e) => setTradeUsd(e.target.value)}
+              className="modal-input"
+              placeholder="100.00"
+            />
+          </div>
+
+          <div className="crypto-quick-chips">
+            {[50, 100, 250, 500, 1000].map((amt) => (
+              <button
+                key={amt}
+                type="button"
+                className="crypto-chip"
+                onClick={() => setTradeUsd(String(amt))}
+              >
+                ${amt}
+              </button>
+            ))}
+          </div>
+
+          <div className="crypto-estimates">
+            <div className="crypto-estimate-row">
+              <span className="crypto-estimate-label">Precio de Mercado:</span>
+              <span className="crypto-estimate-val">${fmt(priceBy[tradeSymbol], 2)}</span>
+            </div>
+            <div className="crypto-estimate-row">
+              <span className="crypto-estimate-label">Cantidad Estimada:</span>
+              <span className="crypto-estimate-val accent">
+                {fmt((Number(tradeUsd || 0) / (priceBy[tradeSymbol] || 1)) || 0, 8)} {tradeSymbol}
+              </span>
+            </div>
+          </div>
+
+          {tradeMsg && (
+            <div
+              className={`crypto-trade-alert ${
+                tradeMsg.includes("filled") ? "success" : "error"
+              }`}
+            >
+              {tradeMsg}
+            </div>
+          )}
+        </div>
+      </Modal>
+    </ClientLayout>
   );
 }

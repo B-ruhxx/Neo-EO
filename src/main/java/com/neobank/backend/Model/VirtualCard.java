@@ -34,8 +34,35 @@ public class VirtualCard {
     @Column(nullable = false)
     private CardStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private CardType cardType = CardType.VIRTUAL;
+
+    @Column(precision = 12, scale = 2)
+    @Builder.Default
+    private java.math.BigDecimal dailyLimit = new java.math.BigDecimal("500.00");
+
+    @Column(precision = 12, scale = 2)
+    @Builder.Default
+    private java.math.BigDecimal monthlyLimit = new java.math.BigDecimal("2000.00");
+
+    @Column(length = 4)
+    @Builder.Default
+    private String pin = "1234";
+
+    @Builder.Default
+    private Boolean onlinePaymentsEnabled = true;
+
+    @Builder.Default
+    private String color = "obsidian";
+
+    private String cardHolder;
+
     public enum CardStatus {
         ACTIVE, FROZEN, DELETED
     }
 
+    public enum CardType {
+        VIRTUAL, PHYSICAL, DISPOSABLE
+    }
 }

@@ -19,7 +19,6 @@ public interface UserService {
         UserResponseDTO freezeUser(Long id);
         UserResponseDTO unfreezeUser(Long id);
         User getUserEntityByEmail(String email);
+        List<com.neobank.backend.DTO.UserSummaryDTO> searchUsers(String query);
+        List<com.neobank.backend.DTO.UserSummaryDTO> getFrequentContacts(String userEmail);
     }
-
-
-

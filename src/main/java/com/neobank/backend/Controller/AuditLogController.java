@@ -22,6 +22,7 @@ public class AuditLogController {
     private final AuditLogService auditLogService;
 
 
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<AuditLogDTO> getAllLogs() {
         return auditLogService.getAllLogs();

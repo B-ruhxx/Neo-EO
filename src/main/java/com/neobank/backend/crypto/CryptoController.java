@@ -39,7 +39,7 @@ public class CryptoController {
         ));
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/me/holdings")
     public ResponseEntity<List<CryptoHoldingDTO>> myHoldings(Authentication auth) {
         var holdings = cryptoService.getMyHoldings(auth.getName()).stream()
@@ -48,7 +48,7 @@ public class CryptoController {
         return ResponseEntity.ok(holdings);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/me/orders")
     public ResponseEntity<List<CryptoOrderResponseDTO>> myOrders(Authentication auth) {
         var orders = cryptoService.getMyOrders(auth.getName()).stream()
@@ -67,7 +67,7 @@ public class CryptoController {
         return ResponseEntity.ok(orders);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping("/order")
     public ResponseEntity<CryptoOrderResponseDTO> marketOrder(
             Authentication auth,

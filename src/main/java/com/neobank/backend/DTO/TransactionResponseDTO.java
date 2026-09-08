@@ -19,5 +19,5 @@ public class TransactionResponseDTO {
     private TransactionType type;
     private String description;
     private LocalDateTime timestamp;
-
+    private String category;
 }

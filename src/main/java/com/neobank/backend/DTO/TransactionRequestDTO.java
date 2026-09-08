@@ -34,6 +34,14 @@ public class TransactionRequestDTO {
 
     private Long recipientId;
 
+    private String category;
 
-
+    public TransactionRequestDTO(Long userId, BigDecimal amount, TransactionType type, String description, Long recipientId) {
+        this.userId = userId;
+        this.amount = amount;
+        this.type = type;
+        this.description = description;
+        this.recipientId = recipientId;
+        this.category = "OTHER";
+    }
 }

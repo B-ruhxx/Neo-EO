@@ -28,6 +28,12 @@ class TransactionServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private com.neobank.backend.Repository.AuditLogRepository auditLogRepository;
+
+    @Mock
+    private com.neobank.backend.Service.NotificationService notificationService;
+
     @InjectMocks
     private TransactionService transactionService;
 

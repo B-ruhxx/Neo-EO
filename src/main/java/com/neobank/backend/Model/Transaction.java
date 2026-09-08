@@ -34,6 +34,10 @@ public class Transaction {
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private TransactionCategory category = TransactionCategory.OTHER;
+
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private User user;

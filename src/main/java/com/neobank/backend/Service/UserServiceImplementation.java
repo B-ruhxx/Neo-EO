@@ -6,6 +6,8 @@ import com.neobank.backend.Exceptions.UserNotFoundException;
 import com.neobank.backend.Mapper.UserMapper;
 import com.neobank.backend.Model.User;
 import com.neobank.backend.Repository.UserRepository;
+import com.neobank.backend.DTO.UserSummaryDTO;
+import com.neobank.backend.Repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +17,16 @@ import java.util.Optional;
 public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
 
     public UserServiceImplementation(UserRepository userRepository) {
+        this(userRepository, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public UserServiceImplementation(UserRepository userRepository, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
@@ -60,7 +69,9 @@ public class UserServiceImplementation implements UserService {
             existingUser.setFirstName(updateUser.getFirstName());
             existingUser.setLastName(updateUser.getLastName());
             existingUser.setEmail(updateUser.getEmail());
-            existingUser.setPassword(updateUser.getPassword());
+            if (updateUser.getPassword() != null && !updateUser.getPassword().isBlank()) {
+                existingUser.setPassword(updateUser.getPassword());
+            }
             existingUser.setPhoneNumber(updateUser.getPhoneNumber());
             existingUser.setAddress(updateUser.getAddress());
             existingUser.setCity(updateUser.getCity());
@@ -103,5 +114,27 @@ public class UserServiceImplementation implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    @Override
+    public List<UserSummaryDTO> searchUsers(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return List.of();
+        }
+        return userRepository.searchUsers(query.trim()).stream()
+                .map(u -> new UserSummaryDTO(u.getId(), u.getFirstName(), u.getLastName(), u.getEmail()))
+                .toList();
+    }
+
+    @Override
+    public List<UserSummaryDTO> getFrequentContacts(String userEmail) {
+        if (transactionRepository == null) {
+            return List.of();
+        }
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + userEmail));
+
+        return transactionRepository.findDistinctRecipientsByUser(user).stream()
+                .map(u -> new UserSummaryDTO(u.getId(), u.getFirstName(), u.getLastName(), u.getEmail()))
+                .toList();
+    }
 
 }

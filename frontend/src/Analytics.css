@@ -1,0 +1,238 @@
+/* Analytics.css - Modern Minimalist Analytics & Budgets */
+
+.analytics-month-picker {
+  display: flex;
+  align-items: center;
+}
+
+.select-custom {
+  background: var(--bg-card, #131b2e);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary, #f1f5f9);
+  padding: 8px 14px;
+  border-radius: var(--radius-md, 8px);
+  font-size: 0.88rem;
+  cursor: pointer;
+  outline: none;
+  min-height: 44px;
+}
+
+.select-custom:focus {
+  border-color: var(--color-primary, #3b82f6);
+}
+
+/* Metrics Grid */
+.analytics-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md, 16px);
+  margin-top: var(--spacing-lg, 24px);
+}
+
+@media (max-width: 1024px) {
+  .analytics-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .analytics-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Legacy analytics-metrics-grid replaced by global account-metrics-grid */
+
+/* Charts Grid */
+.analytics-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg, 24px);
+  margin-top: 24px;
+}
+
+@media (max-width: 1024px) {
+  .analytics-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-box {
+  background: var(--bg-card, #131b2e);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-lg, 16px);
+  padding: 24px;
+}
+
+.chart-header {
+  margin-bottom: 18px;
+}
+
+.chart-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary, #f1f5f9);
+  margin: 0 0 4px 0;
+}
+
+.chart-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.chart-content {
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-empty {
+  text-align: center;
+  color: var(--text-secondary, #94a3b8);
+  font-size: 0.9rem;
+}
+
+/* Budgets Section */
+.category-budgets-section {
+  margin-top: 32px;
+  background: var(--bg-card, #131b2e);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-lg, 16px);
+  padding: 24px;
+}
+
+.section-header-row {
+  margin-bottom: 20px;
+}
+
+.section-header-row h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary, #f1f5f9);
+  margin: 0 0 4px 0;
+}
+
+.category-budget-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.budget-row-card {
+  display: grid;
+  grid-template-columns: 220px 1fr 100px;
+  align-items: center;
+  gap: 20px;
+  background: var(--bg-subtle, rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+  border-radius: var(--radius-md, 12px);
+  padding: 16px 20px;
+  transition: border-color var(--transition-fast, 0.15s);
+}
+
+.budget-row-card:hover {
+  border-color: var(--border-color-focus, rgba(255, 255, 255, 0.14));
+}
+
+@media (max-width: 800px) {
+  .budget-row-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.category-meta-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.category-icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.category-name {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--text-primary, #f1f5f9);
+}
+
+.category-tx-count {
+  font-size: 0.74rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.budget-progress-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.budget-numbers-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.budget-numbers-row strong {
+  color: var(--text-primary, #f1f5f9);
+}
+
+.budget-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.budget-progress-bar {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.budget-alert-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.budget-alert-tag.warning {
+  color: #f59e0b;
+}
+
+.budget-alert-tag.danger {
+  color: #ef4444;
+}
+
+.budget-action-col {
+  text-align: right;
+}
+
+@media (max-width: 800px) {
+  .budget-action-col {
+    text-align: left;
+  }
+}
+
+.analytics-loading {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-secondary, #94a3b8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}

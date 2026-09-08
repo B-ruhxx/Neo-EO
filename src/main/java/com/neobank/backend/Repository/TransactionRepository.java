@@ -34,6 +34,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
         return findTopNTransactions(PageRequest.of(0, limit));
     }
 
-
-
+    @Query("SELECT DISTINCT t.recipient FROM Transaction t WHERE t.user = :user AND t.recipient IS NOT NULL AND t.recipient.deleted = false")
+    List<User> findDistinctRecipientsByUser(@org.springframework.data.repository.query.Param("user") User user);
 }

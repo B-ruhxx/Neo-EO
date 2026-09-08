@@ -1,5 +1,8 @@
 package com.neobank.backend.Controller;
 
+import com.neobank.backend.DTO.CardLimitsDTO;
+import com.neobank.backend.DTO.CardPinDTO;
+import com.neobank.backend.DTO.CardRequestDTO;
 import com.neobank.backend.DTO.VirtualCardDTO;
 import com.neobank.backend.Model.User;
 import com.neobank.backend.Model.VirtualCard;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/cards")
@@ -21,63 +25,101 @@ public class VirtualCardController {
     private final VirtualCardService virtualCardService;
     private final UserService userService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping
-    public ResponseEntity<VirtualCard> createCard(Principal principal) {
+    public ResponseEntity<VirtualCardDTO> createCard(
+            @RequestBody(required = false) CardRequestDTO request,
+            Principal principal) {
         User user = userService.getUserEntityByEmail(principal.getName());
-        return ResponseEntity.ok(virtualCardService.createCard(user));
+        VirtualCard card = virtualCardService.createCard(user, request);
+        return ResponseEntity.ok(toDTO(card));
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
-    public ResponseEntity<List<VirtualCard>> getMyCards(Principal principal) {
+    public ResponseEntity<List<VirtualCardDTO>> getMyCards(Principal principal) {
         User user = userService.getUserEntityByEmail(principal.getName());
-        return ResponseEntity.ok(virtualCardService.getUserCards(user));
+        List<VirtualCardDTO> cards = virtualCardService.getUserCards(user).stream()
+                .filter(c -> c.getStatus() != VirtualCard.CardStatus.DELETED)
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(cards);
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/virtual-cards/{id}/freeze")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PatchMapping("/{id}/freeze")
     public ResponseEntity<VirtualCardDTO> freezeCard(@PathVariable Long id) {
         VirtualCard card = virtualCardService.freezeCard(id);
-
-        VirtualCardDTO dto = new VirtualCardDTO(
-                card.getId(),
-                maskCardNumber(card.getCardNumber()),
-                card.getStatus().name()
-        );
-
-
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(toDTO(card));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PostMapping("/virtual-cards/{id}/freeze")
+    public ResponseEntity<VirtualCardDTO> freezeCardLegacy(@PathVariable Long id) {
+        return freezeCard(id);
+    }
 
-
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PatchMapping("/{id}/unfreeze")
     public ResponseEntity<VirtualCardDTO> unfreezeCard(@PathVariable Long id) {
         VirtualCard card = virtualCardService.unfreezeCard(id);
-
-        VirtualCardDTO dto = new VirtualCardDTO(
-                card.getId(),
-                maskCardNumber(card.getCardNumber()),
-                card.getStatus().name()
-        );
-
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(toDTO(card));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PatchMapping("/{id}/limits")
+    public ResponseEntity<VirtualCardDTO> updateLimits(
+            @PathVariable Long id,
+            @RequestBody CardLimitsDTO limits) {
+        VirtualCard card = virtualCardService.updateLimits(id, limits);
+        return ResponseEntity.ok(toDTO(card));
+    }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PatchMapping("/{id}/pin")
+    public ResponseEntity<VirtualCardDTO> updatePin(
+            @PathVariable Long id,
+            @RequestBody CardPinDTO pinDto) {
+        VirtualCard card = virtualCardService.updatePin(id, pinDto.getPin());
+        return ResponseEntity.ok(toDTO(card));
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PatchMapping("/{id}/toggle-online")
+    public ResponseEntity<VirtualCardDTO> toggleOnline(@PathVariable Long id) {
+        VirtualCard card = virtualCardService.toggleOnlinePayments(id);
+        return ResponseEntity.ok(toDTO(card));
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PostMapping("/{id}/regenerate")
+    public ResponseEntity<VirtualCardDTO> regenerate(@PathVariable Long id) {
+        VirtualCard card = virtualCardService.regenerateCard(id);
+        return ResponseEntity.ok(toDTO(card));
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCard(@PathVariable Long id) {
         virtualCardService.deleteCard(id);
         return ResponseEntity.ok("Card deleted successfully");
     }
 
-
-    private String maskCardNumber(String cardNumber) {
-        if (cardNumber == null || cardNumber.length() < 4) return "****";
-        return "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
+    private VirtualCardDTO toDTO(VirtualCard card) {
+        return new VirtualCardDTO(
+                card.getId(),
+                card.getCardNumber(),
+                card.getCvv(),
+                card.getExpiryDate(),
+                card.getStatus().name(),
+                card.getCardType() != null ? card.getCardType().name() : "VIRTUAL",
+                card.getDailyLimit(),
+                card.getMonthlyLimit(),
+                card.getPin(),
+                card.getOnlinePaymentsEnabled(),
+                card.getColor(),
+                card.getCardHolder()
+        );
     }
-
 }
+

@@ -27,6 +27,9 @@ class VirtualCardTests {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private com.neobank.backend.Service.NotificationService notificationService;
+
     @InjectMocks
     private VirtualCardService virtualCardService;
 

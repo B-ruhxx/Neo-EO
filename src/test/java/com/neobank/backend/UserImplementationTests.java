@@ -80,12 +80,12 @@ public class UserImplementationTests {
                 User.builder().id(2L).email("b@example.com").role(Role.ADMIN).build()
         );
 
-        when(userRepository.findAll()).thenReturn(users);
+        when(userRepository.findByDeletedFalse()).thenReturn(users);
 
         List<UserResponseDTO> result = userService.getAllUsers();
 
         assertEquals(2, result.size());
-        verify(userRepository).findAll();
+        verify(userRepository).findByDeletedFalse();
     }
 
     @Test
@@ -113,16 +113,19 @@ public class UserImplementationTests {
 
     @Test
     void testDeleteUser_whenExists() {
-        when(userRepository.existsById(1L)).thenReturn(true);
+        User user = new User();
+        user.setId(1L);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         userService.deleteUser(1L);
 
-        verify(userRepository).deleteById(1L);
+        assertTrue(user.getDeleted());
+        verify(userRepository).save(user);
     }
 
     @Test
     void testDeleteUser_whenNotExists_shouldThrow() {
-        when(userRepository.existsById(1L)).thenReturn(false);
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> userService.deleteUser(1L));
     }

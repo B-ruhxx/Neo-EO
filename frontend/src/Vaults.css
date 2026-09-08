@@ -1,0 +1,324 @@
+/* ==========================================================================
+   BÓVEDAS DE AHORRO — NEO BANK (MODERNO & MINIMALISTA)
+   ========================================================================== */
+
+.vaults-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+/* --- Cabecera de Bóvedas --- */
+.vaults-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.vaults-header h2 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.vault-btn-primary {
+  height: 44px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-full);
+  background-color: var(--primary);
+  color: #ffffff;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.vault-btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.vault-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- Tarjetas de Resumen Superior --- */
+.vaults-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+
+.vault-summary-card {
+  background-color: var(--bg-card);
+  border-radius: 22px;
+  padding: var(--space-5);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  transition: border-color var(--transition-normal);
+}
+
+.vault-summary-card:hover {
+  border-color: var(--border-default);
+}
+
+.vault-summary-card .summary-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.vault-summary-card .summary-value {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.vault-summary-card .summary-value.highlight {
+  color: var(--primary);
+}
+
+/* --- Cuadrícula de Bóvedas --- */
+.vaults-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-6);
+}
+
+.vault-card {
+  background-color: var(--bg-card);
+  border-radius: 22px;
+  border: 1px solid var(--border-subtle);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.vault-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-md);
+}
+
+.vault-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.vault-name {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.vault-date {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.vault-delete-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.vault-delete-btn:hover {
+  color: var(--danger);
+  background-color: var(--danger-subtle);
+}
+
+.vault-amounts {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.vault-current {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.vault-target {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Barra de Progreso Minimalista */
+.vault-progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.vault-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #06b6d4);
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.vault-progress-bar-fill.complete {
+  background: var(--success);
+}
+
+.vault-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.vault-pct {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.vault-pct.complete {
+  color: var(--success);
+}
+
+/* Acciones de la Bóveda */
+.vault-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+
+.vault-action-btn {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: 12px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.vault-action-btn.deposit {
+  background-color: var(--primary-subtle);
+  color: var(--primary);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.vault-action-btn.deposit:hover {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+.vault-action-btn.withdraw {
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.vault-action-btn.withdraw:hover {
+  background-color: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.vault-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Estado de Bóvedas Vacías */
+.vaults-empty {
+  background-color: var(--bg-card);
+  border: 2px dashed var(--border-default);
+  border-radius: 22px;
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-muted);
+}
+
+.vaults-empty h3 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.vaults-empty p {
+  font-size: var(--text-sm);
+  max-width: 420px;
+}
+
+/* --- Adaptación Modo Claro Bóvedas --- */
+.light-mode .vault-summary-card,
+.light-mode .vault-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+}
+
+.light-mode .vault-summary-card:hover,
+.light-mode .vault-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.08);
+}
+
+.light-mode .vault-progress-bar-bg {
+  background-color: #f1f5f9;
+}
+
+.light-mode .vault-action-btn.withdraw {
+  background-color: #f8fafc;
+  color: #334155;
+  border-color: #e2e8f0;
+}
+
+.light-mode .vault-action-btn.withdraw:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.light-mode .vaults-empty {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+}

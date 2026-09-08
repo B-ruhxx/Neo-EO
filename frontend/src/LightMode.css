@@ -1,630 +1,462 @@
+/* ==========================================================================
+   MODO CLARO (LIGHT MODE) — NEO BANK
+   Sincronizado al 100% con los tokens de diseño (WCAG AA >= 4.5:1)
+   ========================================================================== */
+
+.light-mode {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+}
 
 .light-mode .dashboard,
 .light-mode .main,
-.light-mode .content,
+.light-mode .content {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+}
+
+.light-mode .sidebar,
+.light-mode .admin-sidebar,
+.light-mode .header {
+  background-color: var(--bg-surface);
+  border-color: var(--border-subtle);
+}
+
+.light-mode .sidebar-menu li a,
+.light-mode .admin-menu a {
+  color: var(--text-secondary);
+}
+
+.light-mode .sidebar-menu li:hover,
+.light-mode .admin-menu li a:hover {
+  background-color: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.light-mode .sidebar-menu li.active,
+.light-mode .sidebar-menu li.active a,
+.light-mode .admin-menu li.active a {
+  background-color: var(--primary-subtle);
+  color: var(--primary);
+  font-weight: 600;
+}
+
 .light-mode .content-box,
-.light-mode .header,
-.light-mode .transaction-row,
-.light-mode .virtual-card,
+.light-mode .admin-content-box,
+.light-mode .settings-box,
+.light-mode .account-box,
+.light-mode .crypto-card,
 .light-mode .chart-box,
 .light-mode .available-cards,
-.light-mode .modal,
-.light-mode .notifications-dropdown {
-  background-color: #f9f9f9;
-  color: #000000;
+.light-mode .transactions,
+.light-mode .vault-card,
+.light-mode .vault-summary-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
 }
 
-
-.light-mode .sidebar {
-  background-color: #ffffff;
+.light-mode .transaction-row {
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.light-mode .sidebar-menu li a {
-  color: #000;
+.light-mode .transaction-row:hover {
+  background-color: var(--bg-card-hover);
 }
-
-.light-mode .sidebar-menu li a:hover,
-.light-mode .sidebar-menu .active {
-  color: #5a189a;
-}
-
 
 .light-mode .tx-date,
 .light-mode .label,
-.light-mode .card-summary {
-  color: #555;
+.light-mode .card-summary,
+.light-mode .vault-summary-card .summary-label,
+.light-mode .account-field label,
+.light-mode .helper-text {
+  color: var(--text-muted);
 }
 
+.light-mode .tx-amount,
+.light-mode .tx-type,
+.light-mode .vault-name,
+.light-mode .account-field p {
+  color: var(--text-primary);
+}
 
+/* Transacciones y Estados Semánticos */
 .light-mode .tx-icon.deposit {
-  color: #22c55e;
-  background-color: rgba(34, 197, 94, 0.1);
+  color: var(--success);
+  background-color: var(--success-subtle);
 }
 
 .light-mode .tx-icon.withdrawal {
-  color: #ef4444;
-  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  background-color: var(--danger-subtle);
 }
 
 .light-mode .tx-icon.transfer {
-  color: #3b82f6;
-  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--info);
+  background-color: var(--info-subtle);
 }
 
-
-.light-mode .transaction-row:hover,
-.light-mode .virtual-card:hover,
-.light-mode .virtual-card.add-card:hover {
-  background-color: #eee;
+/* Formularios e Inputs */
+.light-mode input,
+.light-mode select,
+.light-mode textarea,
+.light-mode .search,
+.light-mode .transactions-search,
+.light-mode .transactions-filter,
+.light-mode .modal input {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
 }
 
+.light-mode input:focus,
+.light-mode select:focus,
+.light-mode textarea:focus,
+.light-mode .transactions-search:focus,
+.light-mode .transactions-filter:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
 
+.light-mode input::placeholder,
+.light-mode .transactions-search::placeholder {
+  color: var(--text-muted);
+}
+
+/* Modales y Dropdowns */
+.light-mode .modal {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.light-mode .notifications-dropdown {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+}
+
+.light-mode .notification-item {
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.light-mode .notification-item:hover {
+  background-color: var(--bg-card-hover);
+}
+
+.light-mode .notification-item.read {
+  color: var(--text-muted);
+}
+
+/* Botones */
+.light-mode .primary-btn,
 .light-mode .settings-btn,
 .light-mode .modal-btn.save,
-.light-mode .danger {
-  background: linear-gradient(135deg, #7e22ce, #c084fc);
-  color: white;
+.light-mode .vault-btn-primary {
+  background-color: var(--primary);
+  color: #ffffff;
 }
 
+.light-mode .primary-btn:hover,
+.light-mode .settings-btn:hover,
+.light-mode .modal-btn.save:hover,
+.light-mode .vault-btn-primary:hover {
+  background-color: var(--primary-hover);
+}
 
-.light-mode .modal input {
+.light-mode .danger,
+.light-mode .btn-danger {
+  background-color: var(--danger-subtle);
+  color: var(--danger);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.light-mode .danger:hover,
+.light-mode .btn-danger:hover {
+  background-color: var(--danger);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   MODO CLARO PARA NUEVOS COMPONENTES COMPARTIDOS Y PORTAL CLIENTE
+   ========================================================================== */
+
+.light-mode .client-layout-root,
+.light-mode .client-layout-main {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.light-mode .client-sidebar {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  border-right: 1px solid #e2e8f0;
+}
+
+.light-mode .client-brand-title {
+  color: #0f172a;
+}
+
+.light-mode .client-section-heading {
+  color: #64748b;
+}
+
+.light-mode .client-menu-link {
+  color: #475569;
+}
+
+.light-mode .client-menu-link:hover {
+  background-color: rgba(14, 165, 233, 0.08);
+  color: #0284c7;
+}
+
+.light-mode .client-menu-item.active .client-menu-link {
   background: #ffffff;
-  border: 1px solid #ccc;
-  color: #000;
+  color: #0284c7;
+  border-left-color: #0284c7;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
-
-.light-mode .notif-badge {
-  background-color: #dc2626;
-  color: white;
+.light-mode .client-menu-item.active .client-nav-icon {
+  color: #0284c7;
 }
 
-.light-mode .h3{
-    color:#c084fc;
+.light-mode .client-user-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
 }
 
+.light-mode .client-user-name {
+  color: #0f172a;
+}
 
+.light-mode .client-header {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid #e2e8f0;
+}
 
-.light-mode {
-    background-color: #f5f5f5;
-    color: #222;
-  }
-  
-  .light-mode .sidebar {
-    background-color: #ffffff;
-  }
-  
-  .light-mode .sidebar-menu li a {
-    color: #222;
-  }
-  
-  .light-mode .sidebar-menu li.active {
-    color: #a78bfa;
-  }
-  
-  .light-mode .sidebar-menu li a:hover {
-    color: #a78bfa;
-  }
-  
-  .light-mode .header {
-    background-color: #ffffff;
-  }
-  
-  .light-mode .content-box,
-  .light-mode .settings-box {
-    background-color: #fff;
-    color: #222;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  .light-mode .settings-section h3 {
-    color: #a78bfa; 
-  }
-  
-  .light-mode .toggle {
-    color: #222;
-  }
-  
-  .light-mode .slider {
-    background-color: #ccc; 
-  }
-  
-  .light-mode .toggle input:checked + .slider {
-    background-color: #a78bfa; 
-  }
-  
-  .light-mode .modal {
-    background-color: #fff;
-    color: #222;
-  }
-  
-  .light-mode .modal input {
-    background-color: #f9f9f9;
-    color: #222;
-    border: 1px solid #ccc;
-  }
-  
-  .light-mode .notif-icon,
-  .light-mode .section-icon {
-    color: #a78bfa;
-  }
-  
-  .light-mode .danger,
-  .light-mode .settings-btn {
-    background: linear-gradient(135deg, #a78bfa, #c084fc);
-    color: white;
-  }
-  
-  .light-mode .danger:hover,
-  .light-mode .settings-btn:hover {
-    background: linear-gradient(135deg, #9f7aea, #b794f4);
-  }
+.light-mode .client-header-title {
+  color: #0f172a;
+}
 
-  .light-mode .sidebar-menu li a {
-    color: #111;
-  }
-  
-  .light-mode .sidebar-menu li:hover {
-    background-color: #eee;
-  }
-  
-  .light-mode .sidebar-menu li.active {
-    background-color: #a78bfa;
-  }
-  
-  .light-mode .sidebar-menu li.active a {
-    color: white;
-  }
-  
-  .light-mode .sidebar-menu li.active {
-    background-color: #a78bfa; 
-  }
-  
-  
+.light-mode .client-header-user-chip {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+}
 
-  .light-mode .sidebar-menu li a:hover {
-    background-color: #efefef;
-    color: #5a189a;          
-  }
+/* Mi Cuenta en Modo Claro */
+.light-mode .account-hero-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
 
-.light-mode .account-title {
-    color: #a78bfa;
-  }
-  
-  .light-mode .account-field label {
-    color: #555;
-  }
-  
-  .light-mode .account-field p {
-    color: #000;
-  }
-  
-  .light-mode .edit-btn {
-    background: linear-gradient(135deg, #a78bfa, #c084fc);
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 20px;
-  }
-  
-  .light-mode .edit-btn:hover {
-    background: linear-gradient(135deg, #9f7aea, #b794f4);
-  }
-  
-  .light-mode .password-field p {
-    color: #000;
-  }
-  
-  .light-mode .eye-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #a78bfa;
-  }
-/
-.light-mode .edit-input {
-    background-color: #ffffff;
-    color: #222;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px 12px;
-  }
-  
-  .light-mode .edit-input:focus {
-    outline: none;
-    border-color: #a78bfa;
-  }
-  
-  .light-mode .account-title {
-    color: #a78bfa;
-  }
-  
-  .light-mode .account-field label {
-    color: #555;
-  }
-  
-  .light-mode .edit-btn {
-    background: linear-gradient(135deg, #a78bfa, #c084fc);
-    color: white;
-    font-weight: bold;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 30px;
-    margin-top: 20px;
-    cursor: pointer;
-  }
-  
-  .light-mode .edit-btn:hover {
-    background: linear-gradient(135deg, #9f7aea, #b794f4);
-  }
-  
+.light-mode .account-hero-name {
+  color: #0f172a;
+}
 
-.light-mode .modal-overlay {
-    background-color: rgba(0, 0, 0, 0.3); 
-  }
-  
-  .light-mode .modal-content {
-    background-color: #ffffff;
-    color: #000;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  }
-  
+.light-mode .account-tab-content-card,
+.light-mode .settings-card {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
 
-  .light-mode .modal-title {
-    color: #a78bfa;
-    font-weight: bold;
-    margin-bottom: 16px;
-    font-size: 1.4rem;
-  }
-  
+.light-mode .profile-field-item,
+.light-mode .security-box,
+.light-mode .settings-item-row {
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+}
 
-  .light-mode .modal-input {
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 8px;
-    color: #000;
-    margin-bottom: 12px;
-    width: 100%;
-  }
+.light-mode .banking-account-number-box {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-color: #e2e8f0;
+}
 
-  .light-mode .modal-label {
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 6px;
-    display: block;
-  }
-  
+.light-mode .banking-account-number-box span {
+  color: #0f172a !important;
+}
 
-  .light-mode .type-btn {
-    background-color: #f2f2f2;
-    color: #333;
-    border: 1px solid #ccc;
-  }
-  
-  .light-mode .type-btn.active.deposit {
-    border-color: #22c55e;
-    color: #22c55e;
-    background-color: rgba(34, 197, 94, 0.1);
-  }
-  
-  .light-mode .type-btn.active.withdrawal {
-    border-color: #ef4444;
-    color: #ef4444;
-    background-color: rgba(239, 68, 68, 0.1);
-  }
-  
-  .light-mode .type-btn.active.transfer {
-    border-color: #3b82f6;
-    color: #3b82f6;
-    background-color: rgba(59, 130, 246, 0.1);
-  }
-  
- 
-  .light-mode .modal-btn.confirm {
-    background: linear-gradient(135deg, #a78bfa, #c084fc);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    padding: 10px 20px;
-    font-weight: bold;
-  }
-  
-  .light-mode .modal-btn.cancel {
-    background-color: #ddd;
-    color: #333;
-    border: none;
-    border-radius: 30px;
-    padding: 10px 20px;
-    margin-left: 10px;
-    font-weight: bold;
-  }
- 
+.light-mode .shared-modal-container {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #0f172a;
+}
 
-.light-mode .transactions-header h2 {
-    color: #a78bfa;
-  }
-  
-  .light-mode .transactions-filter,
-  .light-mode .transactions-search {
-    background-color: #d7d7d7;
-    color: #333;
-    border: 1px solid #ccc;
-  }
-  
-  .light-mode .transactions-filter:focus,
-  .light-mode .transactions-search:focus {
-    border-color: #a78bfa;
-    outline: none;
-  }
-  
-  .light-mode .new-tx-btn {
-    background: linear-gradient(135deg, #a78bfa, #c084fc);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .light-mode .new-tx-btn:hover {
-    background: linear-gradient(135deg, #9f7aea, #b794f4);
-  }
-  
-  .light-mode .transaction-row {
-    background-color: #fdfdfd;
-    color: #222;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  .light-mode .tx-date,
-  .light-mode .tx-type {
-    color: #666;
-  }
-  
-  .light-mode .tx-amount {
-    color: #000;
-    font-weight: bold;
-  }
-  
-  .light-mode .tx-icon.deposit {
-    background-color: rgba(34, 197, 94, 0.1);
-    color: #22c55e;
-  }
-  
-  .light-mode .tx-icon.withdrawal {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-  }
-  
-  .light-mode .tx-icon.transfer {
-    background-color: rgba(59, 130, 246, 0.1);
-    color: #3b82f6;
-  }
-  
- 
-  .light-mode .modal-content {
-    background-color: #ffffff;
-    color: #222;
-  }
-  
-  .light-mode .modal-input {
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    color: #222;
-  }
-  
-  .light-mode .modal-title {
-    color: #a78bfa;
-  }
-  
-  .light-mode .modal-btn.confirm {
-    background: linear-gradient(135deg, #a78bfa, #c084fc);
-    color: white;
-  }
-  
-  .light-mode .modal-btn.cancel {
-    background-color: #ddd;
-    color: #333;
-  }
-  
+.light-mode .shared-modal-title {
+  color: #0f172a;
+}
 
-.light-mode .transactions-search {
-    background-color: white;
-    color: #444; 
-  }
-  
-  .light-mode .search-wrapper {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 40px;
-    color: #444;
-  }
-  
-  .light-mode .search-icon {
-    color: #999;
-  }
-  
+.light-mode .shared-modal-footer {
+  background-color: #f8fafc;
+  border-top-color: #e2e8f0;
+}
 
-  .light-mode .transactions-filter {
-    background-color: #fff;
-    color: #444;
-    border-radius: 40px;
-    padding: 8px 20px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  
+.light-mode .metric-card {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+}
 
-  .light-mode .transactions-filter:hover,
-  .light-mode .transactions-filter:focus {
-    background-color: #f2f2f2;
-    outline: none;
-  }
-  
- 
-  .light-mode .transactions-filter option {
-    background-color: #fff;
-    color: #000;
-  }
-  
-  .light-mode .new-tx-btn {
-    background: linear-gradient(135deg, #a78bfa, #c084fc);
-    color: white;
-    border: none;
-    border-radius: 40px;
-    padding: 10px 20px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  
-  .light-mode .new-tx-btn:hover {
-    background: linear-gradient(135deg, #9f7aea, #b794f4);
-  }
-  
-  .light-mode .transaction-row .tx-amount {
-    color: #333;
-  }
+.light-mode .metric-card-value {
+  color: #0f172a;
+}
 
+.light-mode .metric-card-icon-wrap.icon-primary,
+.light-mode .metric-card-icon-wrap.icon-cyan,
+.light-mode .metric-card-icon-wrap.icon-info {
+  background-color: rgba(2, 132, 199, 0.10);
+  color: #0284c7;
+  border-color: rgba(2, 132, 199, 0.20);
+}
 
-.dashboard.light-mode {
-    background-color: #f9f9f9;
-    color:#444;
-  }
-  
-  .dashboard.light-mode .content-box,
-  .dashboard.light-mode .transactions,
-  .dashboard.light-mode .virtualCards,
-  .dashboard.light-mode .chart-box,
-  .dashboard.light-mode .available-cards {
-    background-color: #ebeaea;
-    color:#444;
-  }
-  
-  .dashboard.light-mode .transaction-row {
-    border-bottom: 1px solid #ddd;
-    background-color: #ebeaea;
-    color:#444;
-  }
+.light-mode .metric-card-icon-wrap.icon-success,
+.light-mode .metric-card-icon-wrap.icon-emerald {
+  background-color: rgba(16, 185, 129, 0.10);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.20);
+}
 
- .light-mode .transaction-row span {
-    color:#444;
-  }
+.light-mode .metric-card-icon-wrap.icon-warning,
+.light-mode .metric-card-icon-wrap.icon-amber {
+  background-color: rgba(245, 158, 11, 0.10);
+  color: #d97706;
+  border-color: rgba(245, 158, 11, 0.20);
+}
 
-  .dashboard.light-mode .tx-type{
-    color:#444;
+.light-mode .metric-card-icon-wrap.icon-danger,
+.light-mode .metric-card-icon-wrap.icon-ruby {
+  background-color: rgba(239, 68, 68, 0.10);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.20);
+}
 
-  }
-  
-  .dashboard.light-mode .tx-type,
-  .dashboard.light-mode .tx-date,
-  .dashboard.light-mode .tx-amount {
-    color: #333;
-    background-color: #ebeaea;
-  }
-  
-  .dashboard.light-mode .sidebar {
-    background-color: #fff;
-    border-right: 1px solid #ddd;
-  }
-  
-  .dashboard.light-mode .sidebar-menu a,
-  .dashboard.light-mode .sidebar-menu .icon {
-    color: #444;
-  }
-  
+.light-mode .segmented-tabs-wrapper {
+  background-color: #e2e8f0;
+  border-color: #cbd5e1;
+}
 
-  .dashboard.light-mode .notif-icon,
-  .dashboard.light-mode .notif-badge {
-    color: #6b46c1;
-  }
-  
-  .dashboard.light-mode .notifications-dropdown {
-    background-color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .dashboard.light-mode .notification-item {
-    color: #444;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .dashboard.light-mode .virtual-card.add-card {
-    background-color: #f1f1f1;
-    color: #333;
-  }
-  
-  .dashboard.light-mode .modal-content,
-  .dashboard.light-mode .modal-card-back {
-    background-color: #fff;
-    color: #111;
-  }
-  
-  .dashboard.light-mode .modal-btn.cancel {
-    background-color: #eee;
-    color: #333;
-  }
-  
-  .dashboard.light-mode .chart-placeholder {
-    color: #999;
-  }
-  
-  .dashboard.light-mode .header {
-    background-color: #fefefe;
-    border-bottom: 1px solid #ddd;
-  }
+.light-mode .segmented-tab-btn {
+  color: #475569;
+}
 
+.light-mode .segmented-tab-btn.active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+}
 
-  .dashboard.light-mode {
-    background-color: #f5f5f5; 
-  }
- 
-  
-  .dashboard.light-mode .content-box,
-  .dashboard.light-mode .modal-content,
-  .dashboard.light-mode .cards-carousel .virtual-card {
-    box-shadow: 0 2px 10px rgba(60, 59, 59, 0.06);
-  }
-  
-  
-  .dashboard.light-mode .sidebar {
-    background-color: #fff;
-    color: #333;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
-  }
-  
-  
+.light-mode .theme-card-option {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+}
 
+.light-mode .theme-card-option.selected {
+  border-color: #0284c7;
+  background-color: rgba(14, 165, 233, 0.08);
+}
 
- 
-  .dashboard.light-mode .virtual-card {
-    color: white;
-  }
-  
+.light-mode .app-pagination .pagination-btn {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #475569;
+}
 
+.light-mode .app-pagination .pagination-btn:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
 
-  .light-mode .virtual-card span{
-    color:white;
-  }
+.light-mode .app-pagination .pagination-btn.active {
+  background-color: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
 
-  .dashboard.light-mode .chart-box{
-    background-color: #d7d7d7;
-  }
+/* Criptomonedas en Modo Claro */
+.light-mode .coin-card {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
 
-  .dashboard.light-mode .available-cards{
-    background-color: #d7d7d7;
-  }
+.light-mode .coin-sym-top,
+.light-mode .coin-price {
+  color: #0f172a;
+}
 
- 
+.light-mode .coin-logo {
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+}
 
+/* Montañas del Sidebar en Modo Claro */
+.light-mode, [data-theme="light"] {
+  --mtn-glow-1: #e0f2fe;
+  --mtn-glow-2: #bae6fd;
+  --mtn-base-color: #ffffff;
+  --mtn-layer-1-start: #f1f5f9;
+  --mtn-layer-1-mid: #e2e8f0;
+  --mtn-layer-2-start: #e2e8f0;
+  --mtn-layer-2-mid: #cbd5e1;
+  --mtn-layer-3-start: #e0f2fe;
+  --mtn-layer-front-start: #bae6fd;
+  --mtn-crest-cyan-start: #0284c7;
+  --mtn-crest-cyan-mid: #0ea5e9;
+  --mtn-crest-emerald: #059669;
+  --mtn-fade-bottom: #ffffff;
+  --mtn-stroke-subtle: rgba(14, 165, 233, 0.2);
+  --mtn-stroke-cyan: rgba(2, 132, 199, 0.35);
+}
 
-  .light-mode .balance-display .iconAccount {
-    color: #a78bfa !important;
-  }
-  
+.light-mode .sidebar-mountains-container {
+  opacity: 0.85;
+}
+
+.light-mode .admin-sidebar-footer,
+.light-mode .client-sidebar-footer,
+[data-theme="light"] .admin-sidebar-footer,
+[data-theme="light"] .client-sidebar-footer {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, var(--bg-sidebar, #ffffff) 60%);
+}
+
+.light-mode .admin-user-card,
+.light-mode .client-user-card,
+[data-theme="light"] .admin-user-card,
+[data-theme="light"] .client-user-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--border-subtle);
+}
+
+.light-mode .admin-user-card:hover,
+.light-mode .client-user-card:hover,
+[data-theme="light"] .admin-user-card:hover,
+[data-theme="light"] .client-user-card:hover {
+  background: #ffffff;
+}
+
+/* Dashboard / Inicio en Modo Claro */
+.light-mode .virtualCards,
+.light-mode .quick-actions-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
+}
+
+.light-mode .quick-action-btn {
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.light-mode .quick-action-btn:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.light-mode .quick-action-labels strong {
+  color: #0f172a;
+}

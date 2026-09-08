@@ -60,5 +60,37 @@ public class AuthController {
         return ResponseEntity.ok(UserMapper.toDTO(user));
     }
 
+    @PutMapping("/me")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UserResponseDTO> updateCurrentUser(
+            @RequestBody com.neobank.backend.DTO.ProfileUpdateDTO request,
+            Authentication authentication
+    ) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (request.getFirstName() != null && !request.getFirstName().isBlank()) {
+            user.setFirstName(request.getFirstName().trim());
+        }
+        if (request.getLastName() != null && !request.getLastName().isBlank()) {
+            user.setLastName(request.getLastName().trim());
+        }
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber().trim());
+        }
+        if (request.getAddress() != null) {
+            user.setAddress(request.getAddress().trim());
+        }
+        if (request.getCity() != null) {
+            user.setCity(request.getCity().trim());
+        }
+        if (request.getPostalCode() != null) {
+            user.setPostalCode(request.getPostalCode().trim());
+        }
+        if (request.getCountry() != null) {
+            user.setCountry(request.getCountry().trim());
+        }
+        User saved = userRepository.save(user);
+        return ResponseEntity.ok(UserMapper.toDTO(saved));
+    }
 
 }

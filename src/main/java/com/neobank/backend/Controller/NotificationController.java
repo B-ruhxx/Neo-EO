@@ -22,7 +22,7 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final UserService userService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
     public ResponseEntity<List<NotificationDTO>> getMyNotifications(Principal principal) {
         User user = userService.getUserEntityByEmail(principal.getName());
@@ -33,7 +33,7 @@ public class NotificationController {
         return ResponseEntity.ok(dtos);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PatchMapping("/{id}/read")
     public ResponseEntity<String> markAsRead(@PathVariable Long id) {
         notificationService.markAsRead(id);
