@@ -1,164 +1,61 @@
-NEO Bank — Neutral Online Banking (V1)
+# 🏦 NeoBank — Plataforma Bancaria Digital
 
-Hello and welcome to NEO Bank, a neutral online bank demo where you can deposit, withdraw, and transfer money with no fees. The project is inspired by Revolut, a European neobank known for fast onboarding, multi-currency accounts, card issuing, foreign exchange, and optional crypto/stock features. I built NEO Bank to practice full stack fintech development and to explore a simpler, lower fee experience.
+Guía rápida para iniciar y ejecutar el proyecto localmente (Backend en Spring Boot y Frontend en React).
 
-This is a learning project (Java + Spring Boot + React). Do not use real card numbers or personal data. !!!
+---
 
-What’s included (V1)
--Authentication with JWT (register, login, logout)
+## 📋 Requisitos Previos
 
--Role-based authorization (User/Admin)
+Asegúrate de tener instalado en tu sistema:
+- **Java 17** o superior (`java -version`)
+- **Maven** (`mvn -v`) o utilizar el wrapper `./mvnw`
+- **Node.js 18+** y **npm** (`node -v`, `npm -v`)
 
--User dashboard: recent transactions, notifications, balance
+---
 
--Transactions: deposit, withdrawal, transfer
+## 🚀 Cómo Iniciar el Proyecto
 
--Virtual cards (demo generation and viewing)
+El proyecto requiere dos terminales (una para el servidor backend y otra para la interfaz web frontend).
 
--Account management: edit profile, show/hide password
+### 1. Iniciar el Backend (Spring Boot)
 
--Settings: change password, dark/light mode
+En la raíz del proyecto, abre una terminal y ejecuta:
 
-Admin dashboard:
+```bash
+mvn spring-boot:run
+```
+*(O si usas el wrapper de Maven en Linux/macOS: `./mvnw spring-boot:run`)*
 
--View all users and transactions
+- **Servidor API**: [http://localhost:8080](http://localhost:8080)
+- **Documentación Swagger / OpenAPI**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- **Consola de Base de Datos H2**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+  - **JDBC URL**: `jdbc:h2:file:./data/testdb`
+  - **User Name**: `sa`
+  - **Password**: *(dejar en blanco)*
 
--Freeze / unfreeze / delete users
+---
 
--Export reports (CSV)
+### 2. Iniciar el Frontend (React)
 
-Demo admin account:
-email: admin@bank.com
-password: admin123
-Please register a new user to try user flows. For demonstration stability, do not delete or edit existing seeded users.!!!
+En una segunda terminal, ingresa a la carpeta `frontend/`:
 
----------------------------------------------------------------------------------------------------------------------------
-
-Tech stack:
-
-Frontend: React (CRA), Axios, Recharts, Lucide Icons, Cypress (E2E)
-
-Backend: Java 17+, Spring Boot, Spring Web/Security, Spring Data JPA
-
-Database: H2 (in-memory) for development
-
-Auth: JWT (stateless)
-
-Architecture: Layered (Controller → Service → Repository → Model)
-
----------------------------------------------------------------------------------------------------------------------------
-
-Local setup:
-
-The repo has a backend/ (Spring Boot) and frontend/ (React) folder. Open two terminals.
-
-1) Backend (Spring Boot)
-From the backend/ directory:
-./mvnw spring-boot:run
-# or run the main Application class from your IDE
-
-API base URL: http://localhost:8080
-
-H2 Console: http://localhost:8080/h2-console
-
-JDBC URL is jdbc:h2:mem:testdb 
-
-Swagger UI: http://localhost:8080/swagger-ui/index.html
-
-
-You can test endpoints in Postman. Example:
-
-GET http://localhost:8080/api/users
-Protected routes require an Authorization: Bearer <JWT> header !!!
-
-2) Frontend (React)
-From the frontend/ directory:
-
+```bash
+cd frontend
 npm install
 npm start
-App URL: http://localhost:3000
+```
 
-Key routes:
+- **Aplicación Web**: [http://localhost:3000](http://localhost:3000)
 
-Landing: /
+---
 
-Auth: /login, /register
+## 🔐 Cuentas de Acceso Preconfiguradas
 
-User: /dashboard, /transactions, /account, /settings
+La base de datos cuenta con dos perfiles listos para probar la plataforma:
 
-Admin: /admin, /admin/users, /admin/transactions, /admin/reports
+| Rol | Correo Electrónico | Contraseña | Acceso / Funcionalidades |
+|---|---|---|---|
+| **Administrador** | `admin@bank.com` | `admin123` | Consola `/admin` (usuarios, auditoría, base de datos y métricas globales) |
+| **Cliente Demo** | `demo@bank.com` | `demo123` | Portal `/dashboard` (cuentas, tarjetas virtuales, bóvedas y transferencias) |
 
-If you do not have Node/npm installed, install the current LTS version of Node.js; npm install will fetch all required packages. !!!!
-
-3)Testing
-
-Backend:
-
-Unit tests live under backend/src/test/java/...
-
-Integration tests are in progress...
-
-Endpoints can be exercised in Postman and via Swagger UI.
-
-Frontend (Cypress E2E)
-Run the app in one terminal and Cypress in another.
-
-# terminal 1 (from frontend/)
-npm start
-
-# terminal 2 (from frontend/)
-npm run cypress
-
-In the Cypress runner:
-
-Choose E2E Testing, select Chrome.
-
-Start with app.smoke.cy.js, then run the rest of the specs.
-
-Specs and fixtures are under frontend/cypress/.
-
-Headless run (CI-style):
-
-npm run cypress:run
-
-Project structure (high-level)
-backend/
-  src/main/java/.../Controller
-  src/main/java/.../Service
-  src/main/java/.../Repository
-  src/main/java/.../Model
-  src/test/java/... (tests)
-  application.properties
-
-frontend/
-  src/ (React app)
-  cypress/
-    e2e/        (specs)
-    fixtures/   (mock data)
-    support/    (commands, global intercepts)
-  package.json
-
-----------------------------------------------------------------------------------------------------------------
-  
-Notes!!!!!
-
-JWT security protects user and admin routes.
-
-H2 is used for development; will swap to Postgres/MySQL by updating Spring properties in V2.
-
-If you change ports or origins, update CORS settings accordingly. !!!!
-
-
-Roadmap (V2 — “NEO Flow”)
--Trading module (stocks/crypto)
-
--Crypto price API integration
-
--Backend integration tests and broader coverage
-
--Additional funding/payout flows and more robust limits/KYC (simulated)
-
--CI/CD and containerization
-
----------------------------------------------------------------------------------------------------------------------
-Thank you and enjoy :)
+*(También puedes registrar nuevos usuarios en `/register` desde la aplicación)*.
