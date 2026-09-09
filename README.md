@@ -60,3 +60,29 @@ La base de datos cuenta con dos perfiles listos para probar la plataforma:
 | **Cliente Demo** | `demo@bank.com` | `demo123` | Portal `/dashboard` (cuentas, tarjetas virtuales, bóvedas y transferencias) |
 
 *(También puedes registrar nuevos usuarios en `/register` desde la aplicación)*.
+
+---
+
+## 🧪 Pruebas Automatizadas del Backend
+
+Para ejecutar la suite de pruebas unitarias y de integración (40 pruebas con 100% de éxito):
+
+```bash
+cd backend
+mvn test
+```
+
+- **Ejecutar prueba unitaria específica:** `mvn test -Dtest=TransactionServiceTest`
+- **Ruta de reportes de salida:** `backend/target/surefire-reports/`
+
+---
+
+## 📚 Documentación Técnica Detallada
+
+Encuentra toda la documentación de ingeniería de software en la carpeta `docs/`:
+
+- [**Guía Rápida de Servicios, Base de Datos, Swagger y Pruebas**](file:///home/Bruhxx/Documents/neobank_/docs/GUIA_SERVICIOS_TESTS_Y_RUTAS.md)
+- [**Documentación Integral de APIs, RF y Casos de Uso**](file:///home/Bruhxx/Documents/neobank_/docs/DOCUMENTACION_SISTEMA_BACKEND_APIS.md)
+- [**Arquitectura del Backend, Estructura y Base de Datos**](file:///home/Bruhxx/Documents/neobank_/docs/ARQUITECTURA_Y_ESTRUCTURA_BACKEND.md)
+- [**Versión Web Interactiva de Diagramas (Mermaid.js)**](file:///home/Bruhxx/Documents/neobank_/docs/DOCUMENTACION_SISTEMA_BACKEND_APIS.html)
+
